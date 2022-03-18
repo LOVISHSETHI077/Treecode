@@ -1,0 +1,445 @@
+// creation of tree
+//inorder
+//preorder
+//postorder
+//height of tree
+//size of tree
+//maximum value in tree
+//level order transversal in a binary tree O(n^2)
+//level order transversal in a binary tree O(n)
+//level order transversal in a binary tree O(n) level by level
+//left view of binary tree
+// right view of binary tree
+// convert binary tree to doubly linked list
+// diamter of binary tree
+// finding a common ancestor in a binary tree
+//calculate a time to  burn a  binary tree from a leaf node 
+
+import java.util.*;
+class TreeCodes {
+    static Scanner sc = null;
+    public static void main(String[] args) {
+        sc = new Scanner(System.in);
+        Node root = createTree();
+        System.out.println("inorder");
+        inOrder(root);
+        System.out.println("preorder");
+        preOrder(root);
+        System.out.println("postorder");
+        postOrder(root);
+        System.out.println("height of tree");
+        height(root);
+        System.out.println("Size of tree");
+        size(root);
+        System.out.println("maximum value in tree");
+        maximum(root);
+        System.out.println("Level order transversal in a tree time complexity n^2");
+        for(int i=0;i<height(root);i++)
+        {
+            printCurrentlevel(root,i);
+        }
+        System.out.println("Level order transversal in a tree time complexity O(n)");
+        printLevelorder(root);
+         System.out.println("Level order transversal in a tree time complexity O(n) level byy level printing");
+        printLevelbyLevel(root);
+        
+        System.out.println("Printing left view of binary tree : ");
+        printleftview(root);
+        System.out.println("Printing right view of binary tree : ");
+        printrightview(root);
+        
+        System.out.println("Printing right view of binary tree by another way : ");
+        printrightview2(root);
+        
+        System.out.println("Diameter of binary tree ");
+        diameter(root);
+        
+        // System.out.println(" 2nd way to find Diameter of binary tree");
+        // heightdiameter(root);
+        
+        System.out.println("To find a common ancestor");
+        int n1=7,n2=0;
+        lca(root,n1,n2);
+        System.out.println("Calculation of time to burn a tree by a leaf node");
+        int target = 8;
+        minTime(root, target);
+    }
+    
+    // Creation of tree
+    static Node createTree() {
+        Node root = null;
+        System.out.println("enter data :");
+        int data = sc.nextInt();
+        
+        if( data == -1)
+        {
+            return null;
+        }
+        
+        root = new Node(data);
+        System.out.println("enter left node data " + data);
+        
+         root.left = createTree();
+         
+         System.out.println("enter right node data " + data);
+        
+    root.right =  createTree();
+        
+        return root; 
+    }
+    
+    //****************************************************************8
+    // print inorder
+    static void inOrder(Node root) {
+		if(root == null) return;
+		
+		inOrder(root.left);
+		System.out.print(root.data+" ");
+		inOrder(root.right);
+	}
+	
+	//******************************************************************
+	// print Preorder
+static void preOrder(Node root)
+{
+    if(root == null)
+    return;
+    
+    System.out.print(root.data + " ");
+    preOrder(root.left);
+    preOrder(root.right);
+}
+
+//*******************************************************************
+//print postOrder
+static void postOrder(Node root)
+{
+    if(root == null)
+    return;
+    
+    postOrder(root.left);
+    postOrder(root.right);
+    System.out.print(root.data + " ");
+}
+
+//*********************************************************************
+// print height of tree
+   static int height(Node root)
+   {
+       if(root == null)
+       {
+           return 0;
+       }
+       return Math.max(height(root.left),height(root.right)) + 1;
+   }
+   
+   //***************************************************************
+   // print size of tree
+    static int size(Node root)
+    {
+        if(root == null)
+        {
+            return 0;
+        }
+        return size(root.left) + size(root.right) + 1;
+    }
+    
+    //***********************************************************************
+    // print maximum value of tree
+    static int maximum(Node root) {
+        if(root == null)
+        {
+            return Integer.MIN_VALUE;
+        }
+        return Math.max(root.data, Math.max(maximum(root.left),maximum(root.right)));
+    }
+    
+    
+    //*****************************************************************************8
+    
+    // print element of tree level
+    // time complexity(n^2)0
+    static void printCurrentlevel( Node root, int lvl)
+    {
+        if(root == null)
+        {
+            return;
+        }
+        if(lvl == 1)
+        {
+            System.out.print(root.data + " ");
+        } else if(lvl>1) {
+            printCurrentlevel(root.left, lvl-1);
+            printCurrentlevel(root.right, lvl-1);
+        }
+    }
+    
+    
+    // time complexity(n) all the element print in one line
+    static void printLevelorder(Node root)
+    {
+        Queue<Node> q = new LinkedList<>();
+        q.add(root);
+        
+        while(!q.isEmpty())
+        {
+            Node cur = q.poll();
+            System.out.println(cur.data);
+            if(cur.left!=null)
+            {
+                q.add(cur.left);
+            }
+            if(cur.right != null)
+            {
+                q.add(cur.right);
+            }
+        }
+    }
+    
+    // time complexity(n) all the element print in level order
+    
+    static void printLevelbyLevel(Node root)
+    {
+        Queue<Node> q = new LinkedList<>();
+        q.add(root);
+        q.add(null);
+        while(!q.isEmpty())
+        {
+            Node cur = q.poll();
+            if(cur == null)
+            {
+                if(q.isEmpty())
+                {
+                    return;
+                }
+                q.add(null);
+                System.out.println();
+                continue;
+            }
+            //System.out.println(cur.data);
+            if(cur.left!=null)
+            {
+                q.add(cur.left);
+            }
+            if(cur.right != null)
+            {
+                q.add(cur.right);
+            }
+        }
+    }
+    
+    //*************************************************888888888************
+    // Print left view of binary tree 
+    
+    static void printleftview(Node root)
+    {
+        ArrayList<Node> list = new ArrayList<>();
+        printleftviewUtil(root,list,0);
+        for(Node cur : list)
+        {
+            System.out.print(cur.data + " ");
+        }
+    }
+    
+   static void printleftviewUtil(Node root, ArrayList list, int level)
+    {
+        if(root == null)
+        {
+            return;
+        }
+        if(list.get(level) == null){
+            list.add(root);
+        }
+        printleftviewUtil(root.left,list,level+1);
+         printleftviewUtil(root.right,list,level+1);
+    }
+    
+    
+    //*************************************************************************8
+     // Print right view of binary tree 
+    
+    static void printrightview(Node root)
+    {
+        ArrayList<Node> list = new ArrayList<>();
+        printrightviewUtil(root,list,0);
+        for(Node cur : list)
+        {
+            System.out.print(cur.data + " ");
+        }
+    }
+    
+   static void printrightviewUtil(Node root, ArrayList list, int level)
+    {
+        if(root == null)
+        {
+            return;
+        }
+        if(list.get(level) == null){
+            list.add(root);
+        }
+        
+         printrightviewUtil(root.right,list,level+1);
+         printrightviewUtil(root.left,list,level+1);
+    }
+    
+    // Second way to print right view of binary tree
+static void printrightview2(Node root)
+    {
+        ArrayList<Node> list = new ArrayList<>();
+        printrightviewUtil2(root,list,0);
+        for(Node cur : list)
+        {
+            System.out.print(cur.data + " ");
+        }
+    }
+    
+   static void printrightviewUtil2(Node root, ArrayList list, int level)
+    {
+        if(root == null)
+        {
+            return;
+        }
+        if(list.get(level) == null){
+            list.set(level,root);
+        }
+        
+        printrightviewUtil2(root.left,list,level+1); 
+        printrightviewUtil2(root.right,list,level+1);
+         
+    }
+    
+    //****************************************************************
+    // convert Binary tree to doubly linkedlist
+    // Node prev = null;
+    // Node head = null;
+    // static void convertToDll(Node root)
+    // {
+    //     if(root == null)
+    //     {
+    //         return;
+    //     }
+    //     convertToDll(root.left);
+    //     if(prev == null) head = root;
+    //     else {
+    //         root.left = prev;
+    //         prev.right = root;
+            
+    //     }
+    //     prev = root;
+    //     convertToDll(root.right);
+    // }
+    
+    //*****************************************************************
+    // Diameter of binary tree
+    static int diameter(Node root)
+    {
+        if(root == null)
+        {
+            return 0;
+        }
+        
+        int dl = diameter(root.left);
+        int dr = diameter(root.right);
+        int cur = height1(root.left) + height(root.right) +1;
+        return Math.max(cur,Math.max(dl,dr));
+        
+    }
+    static int height1(Node root) {
+        if(root == null)
+        {
+            return 0;
+        }
+        return 1+ Math.max(height1(root.left),height1(root.right));
+    }
+    
+    // Second way to find diameter of tree
+    // static int ans =0;
+    // static int heightdiameter(Node root)
+    // {
+    //     if(root == null)
+    //     {
+    //         return 0;
+    //     }
+    //     int lh = heightdiameter(Node.left);
+    //     int rh = heightdiameter(Node.right);
+    //     ans = Math.max(ans, 1+lh+rh);
+    //     return 1+Math.max(lh,rh);
+    // }
+    
+    //***********************************************************************
+    // Lowest common ancestor in a binary tree 
+    static Node lca(Node root , int n1, int n2)
+    {
+        if(root == null)
+        {
+            return null;
+        }
+        if(root.data == n1 || root.data == n2)
+        {
+            return root;
+        }
+        
+        Node left = lca(root.left, n1,n2);
+        Node right = lca(root.right, n1,n2);
+        
+        if(left == null)
+        return right;
+        
+        if(right == null)
+        return left;
+        
+        return root;
+    }
+    
+   //***************************************************************************
+   //calculate a time to burn tree from a leaf node 
+     static int minTime(Node root,int target)
+     {
+         Depth depth = new Depth(-1);
+         burn(root, target,depth);
+         return ans1;
+     }
+    static int ans1 = -1;
+    static int burn(Node root, int target, Depth depth)
+    {
+        if(root == null)
+        return 0;
+        
+        if(root.data == target) {
+            depth.d =1;
+            return 1;
+        }
+        
+        Depth ld = new Depth(-1);
+        Depth rd = new Depth(-1);
+        int lh = burn(root.left,target,ld);
+        int rh = burn(root.right,target,rd);
+        
+        if(ld.d != -1)
+        {
+            ans1 = Math.max(ans1, ld.d + 1 + rh);
+            depth.d = ld.d +1;
+        } else if(rd.d != -1) {
+            ans1 = Math.max(ans1, rd.d + 1 + lh);
+            depth.d = rd.d +1; 
+        }
+        return Math.max(lh,rh) +1;
+    }
+    
+}
+class Depth {
+    int d;
+    public Depth(int d) {
+        this.d = d;
+    }
+}
+class Node
+    {
+        Node left, right;
+        int data;
+        
+        public Node(int data)
+        {
+            this.data = data;
+        }
+    }
